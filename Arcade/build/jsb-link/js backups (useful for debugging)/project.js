@@ -39,8 +39,8 @@ t.prototype.onLoad = function() {
 console.log(" App onLoad ");
 };
 t.prototype.start = function() {
-i.default.inst.addCompleteCallback(function(e) {
-n.InitialFacade.inst.start();
+i.default.inst.addCompleteCallback(function(e, t) {
+0 == t && n.InitialFacade.inst.start();
 }, this);
 i.default.inst.checkForUpdate();
 };
@@ -1807,7 +1807,7 @@ this.isUpdating = !0;
 } else this.onComplete("no need to update.");
 };
 t.prototype.checkUpdateCallback = function(e) {
-cc.log("Code: " + e.getEventCode());
+console.log("checkUpdateCallback Code: " + e.getEventCode());
 switch (e.getEventCode()) {
 case jsb.EventAssetsManager.ERROR_NO_LOCAL_MANIFEST:
 this.onError("No local manifest file found, hot update skipped.");
@@ -1819,26 +1819,26 @@ this.onError("Fail to download manifest file, hot update skipped.");
 break;
 
 case jsb.EventAssetsManager.ALREADY_UP_TO_DATE:
-this.onComplete("Already up to date with the latest remote version.");
+var t = this.assetsManager.getRemoteManifest() ? this.assetsManager.getRemoteManifest().getVersion() : " null";
+this.onComplete("Already up to date with the latest remote version :" + t);
 break;
 
 case jsb.EventAssetsManager.NEW_VERSION_FOUND:
 this.isUpdating = !1;
-var t = this.assetsManager.getLocalManifest() ? this.assetsManager.getLocalManifest().getVersion() : " null", o = this.assetsManager.getRemoteManifest() ? this.assetsManager.getRemoteManifest().getVersion() : " null";
-this.onStart("Old version " + t + " ,New version " + o + " found, please try to update. (" + this.assetsManager.getTotalBytes() + ")");
+var o = this.assetsManager.getLocalManifest() ? this.assetsManager.getLocalManifest().getVersion() : " null", n = this.assetsManager.getRemoteManifest() ? this.assetsManager.getRemoteManifest().getVersion() : " null";
+this.onStart("Old version " + o + " ,New version " + n + " found, please try to update. (" + this.assetsManager.getTotalBytes() + ")");
 this.updateVersion();
 break;
 
 default:
 return;
 }
-this.assetsManager.setEventCallback(null);
 };
 t.prototype.getUpdateDescription = function() {
 return "";
 };
 t.prototype.updateVersion = function() {
-if (null != this.assetsManager && !this.isUpdating) if ([ jsb.AssetsManager.State.UPDATING, jsb.AssetsManager.State.UNZIPPING, jsb.AssetsManager.State.UP_TO_DATE ].indexOf(this.assetsManager.getState())) this.onComplete("no need to update", !1); else {
+if (null != this.assetsManager && !this.isUpdating) if ([ jsb.AssetsManager.State.UPDATING, jsb.AssetsManager.State.UNZIPPING, jsb.AssetsManager.State.UP_TO_DATE ].indexOf(this.assetsManager.getState()) >= 0) this.onComplete("no need to update: " + this.assetsManager.getState(), !1); else {
 if (this.assetsManager.getState() === jsb.AssetsManager.State.UNINITED) {
 var e = this.manifest.nativeUrl;
 cc.loader.md5Pipe && (e = cc.loader.md5Pipe.transformURL(e));
@@ -1860,7 +1860,7 @@ o = !0;
 break;
 
 case jsb.EventAssetsManager.UPDATE_PROGRESSION:
-this.onProgress(e.getMessage() ? "Updated file:" + e.getMessage() : "", e.getPercent());
+this.onProgress(e.getMessage() ? "Updated file:" + e.getMessage() : "Updating:" + (100 * e.getPercent()).toFixed(0) + "%", e.getPercent());
 break;
 
 case jsb.EventAssetsManager.ERROR_DOWNLOAD_MANIFEST:
@@ -1870,7 +1870,8 @@ o = !0;
 break;
 
 case jsb.EventAssetsManager.ALREADY_UP_TO_DATE:
-this.onComplete("Already up to date with the latest remote version.");
+var n = this.assetsManager.getRemoteManifest() ? this.assetsManager.getRemoteManifest().getVersion() : " null";
+this.onComplete("Already up to date with the latest remote version :" + n);
 o = !0;
 break;
 
@@ -1896,11 +1897,11 @@ this.isUpdating = !1;
 }
 if (t) {
 this.assetsManager.setEventCallback(null);
-var n = jsb.fileUtils.getSearchPaths(), i = this.assetsManager.getLocalManifest().getSearchPaths();
-console.log(JSON.stringify(i));
-Array.prototype.unshift.apply(n, i);
-cc.sys.localStorage.setItem("HotUpdateSearchPaths", JSON.stringify(n));
-jsb.fileUtils.setSearchPaths(n);
+var i = jsb.fileUtils.getSearchPaths(), a = this.assetsManager.getLocalManifest().getSearchPaths();
+console.log(JSON.stringify(a));
+Array.prototype.unshift.apply(i, a);
+cc.sys.localStorage.setItem("HotUpdateSearchPaths", JSON.stringify(i));
+jsb.fileUtils.setSearchPaths(i);
 }
 };
 t.prototype.restart = function() {
