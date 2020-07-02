@@ -11,12 +11,12 @@ if (a) return a(c, !0);
 throw new Error("Cannot find module '" + r + "'");
 }
 }
-var d = o[r] = {
+var p = o[r] = {
 exports: {}
 };
-t[r][0].call(d.exports, function(e) {
+t[r][0].call(p.exports, function(e) {
 return i(t[r][1][e] || e);
-}, d, d.exports, e, t, o, n);
+}, p, p.exports, e, t, o, n);
 }
 return o[r].exports;
 }
@@ -37,11 +37,11 @@ return null !== e && e.apply(this, arguments) || this;
 }
 t.prototype.onLoad = function() {
 console.log(" App onLoad ");
-};
-t.prototype.start = function() {
 i.default.inst.addCompleteCallback(function(e, t) {
 0 == t && n.InitialFacade.inst.start();
 }, this);
+};
+t.prototype.start = function() {
 i.default.inst.checkForUpdate();
 };
 t.prototype.Onclick = function() {
@@ -346,7 +346,7 @@ return null !== e && e.apply(this, arguments) || this;
 }
 Object.defineProperty(t, "Url", {
 get: function() {
-return "https://vicat.wang/GameRes/";
+return "http://123.56.12.185/GameRes/";
 },
 enumerable: !0,
 configurable: !0
@@ -590,7 +590,7 @@ c.property;
 e[e.Normal = 0] = "Normal";
 e[e.Special = 1] = "Special";
 })(n || (n = {}));
-var d = function(e) {
+var p = function(e) {
 __extends(t, e);
 function t() {
 var t = null !== e && e.apply(this, arguments) || this;
@@ -743,7 +743,7 @@ a(l, this.Content.childrenCount - 1);
 };
 return t = __decorate([ l ], t);
 }(a.default);
-o.default = d;
+o.default = p;
 cc._RF.pop();
 }, {
 "../../Global/GameConfig": "GameConfig",
@@ -1215,7 +1215,7 @@ cc._RF.push(t, "29f9dxDYNRCYIEmZoZYTWke", "LoadingView");
 Object.defineProperty(o, "__esModule", {
 value: !0
 });
-var n = e("../../View/BaseView"), i = e("./LoadingMediator"), a = e("../Facade/InitialFacade"), r = e("../../GamePlay/Command/StartUpSignal"), s = e("../../Update/UpdateController"), c = cc._decorator, l = c.ccclass, d = (c.property, 
+var n = e("../../View/BaseView"), i = e("./LoadingMediator"), a = e("../Facade/InitialFacade"), r = e("../../GamePlay/Command/StartUpSignal"), s = e("../../Update/UpdateController"), c = cc._decorator, l = c.ccclass, p = (c.property, 
 function(e) {
 __extends(t, e);
 function t() {
@@ -1246,6 +1246,13 @@ return this.Progress.getChildByName("Mask").getChildByName("bar");
 enumerable: !0,
 configurable: !0
 });
+Object.defineProperty(t.prototype, "VersionInfo", {
+get: function() {
+return this.node.getChildByName("VersionInfo").getComponent(cc.Label);
+},
+enumerable: !0,
+configurable: !0
+});
 t.prototype.onLoad = function() {
 var e = this;
 console.log(" Loading View onLoad ");
@@ -1253,8 +1260,10 @@ this.node.scale = 1;
 this.Bar.x = this.StartX;
 this.BindMedaitor(i.default);
 this.Progress.opacity = 0;
+this.VersionInfo.string = s.default.inst.getVersion();
 s.default.inst.addCompleteCallback(function(t) {
 e.Progress.runAction(cc.fadeIn(.3));
+e.VersionInfo.string = s.default.inst.getVersion();
 }, this);
 };
 t.prototype.update = function(e) {
@@ -1271,7 +1280,7 @@ this.enabled = !1;
 };
 return t = __decorate([ l ], t);
 }(n.default));
-o.default = d;
+o.default = p;
 cc._RF.pop();
 }, {
 "../../GamePlay/Command/StartUpSignal": "StartUpSignal",
@@ -1728,6 +1737,9 @@ cc.sys.os === cc.sys.OS_ANDROID && this.assetsManager.setMaxConcurrentTask(2);
 t.prototype.setManifest = function(e) {
 this.manifest = e;
 };
+t.prototype.getVersion = function() {
+return null == this.assetsManager ? "" : null == this.assetsManager.getLocalManifest() ? "" : this.assetsManager.getLocalManifest().getVersion();
+};
 t.prototype.addCompleteCallback = function(e, t) {
 this.completeCallback.push({
 target: t,
@@ -1752,6 +1764,10 @@ target: e,
 callback: t
 });
 };
+t.prototype.triggeError = function(e, t) {
+void 0 === t && (t = !1);
+this.onError(e, t);
+};
 t.prototype.onError = function(e, t) {
 void 0 === t && (t = !1);
 console.log(" this.errorCallback:", this.errorCallback.length, "error:", e);
@@ -1768,11 +1784,12 @@ var i = n[o];
 i.callback.apply(i.target, [ e, t ]);
 }
 };
-t.prototype.onStart = function(e) {
+t.prototype.onStart = function(e, t) {
+void 0 === t && (t = !1);
 console.log(" this.startCallback:", this.startCallback.length);
-for (var t = 0, o = this.startCallback; t < o.length; t++) {
-var n = o[t];
-n.callback.apply(n.target, [ e ]);
+for (var o = 0, n = this.startCallback; o < n.length; o++) {
+var i = n[o];
+i.callback.apply(i.target, [ e, t ]);
 }
 };
 t.prototype.onProgress = function(e, t) {
@@ -1825,9 +1842,15 @@ break;
 
 case jsb.EventAssetsManager.NEW_VERSION_FOUND:
 this.isUpdating = !1;
-var o = this.assetsManager.getLocalManifest() ? this.assetsManager.getLocalManifest().getVersion() : " null", n = this.assetsManager.getRemoteManifest() ? this.assetsManager.getRemoteManifest().getVersion() : " null";
-this.onStart("Old version " + o + " ,New version " + n + " found, please try to update. (" + this.assetsManager.getTotalBytes() + ")");
+var o = this.assetsManager.getLocalManifest() ? this.assetsManager.getLocalManifest().getVersion() : "null", n = this.assetsManager.getRemoteManifest() ? this.assetsManager.getRemoteManifest().getVersion() : "null";
+console.log("New version found, old:", o, ", new: ", n);
+if ("null" == o || "null" == n) ; else {
+var i = o.split(".")[0];
+if (n.split(".")[0] > i) this.onStart("new version found, go to store to download new app.", !0); else {
+this.onStart("new version found, update process start.", !1);
 this.updateVersion();
+}
+}
 break;
 
 default:
@@ -1898,8 +1921,9 @@ this.isUpdating = !1;
 if (t) {
 this.assetsManager.setEventCallback(null);
 var i = jsb.fileUtils.getSearchPaths(), a = this.assetsManager.getLocalManifest().getSearchPaths();
-console.log(JSON.stringify(a));
+console.log("new path:", JSON.stringify(a));
 Array.prototype.unshift.apply(i, a);
+console.log("new searchPaths:", JSON.stringify(i));
 cc.sys.localStorage.setItem("HotUpdateSearchPaths", JSON.stringify(i));
 jsb.fileUtils.setSearchPaths(i);
 }
@@ -2053,8 +2077,8 @@ this.ProgressMsg.string = e;
 t.prototype.setDesprition = function() {
 this.Description.string = i.default.inst.getUpdateDescription();
 };
-t.prototype.onStart = function(e) {
-console.log(" startUpdate:", e);
+t.prototype.onStart = function(e, t) {
+console.log(" startUpdate:", e, ",gotoAppStore:", t);
 this.Show();
 this.setDesprition();
 };
