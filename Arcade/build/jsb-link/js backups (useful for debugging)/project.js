@@ -346,7 +346,7 @@ return null !== e && e.apply(this, arguments) || this;
 }
 Object.defineProperty(t, "Url", {
 get: function() {
-return "http://123.56.12.185/GameRes/";
+return "https://bigfish.host/GameRes/";
 },
 enumerable: !0,
 configurable: !0
