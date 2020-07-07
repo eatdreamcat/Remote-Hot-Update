@@ -173,7 +173,7 @@ window.boot = function () {
         BK.Script.loadlib();
     }
     else {
-        var bundledScript = settings.debug ? 'src/project.dev.js' : 'src/project.e02ba.js';
+        var bundledScript = settings.debug ? 'src/project.dev.js' : 'src/project.21f42.js';
         if (jsList) {
             jsList = jsList.map(function (x) {
                 return 'src/' + x;
@@ -209,7 +209,7 @@ window.boot = function () {
     cc.game.run(option, onStart);
 };
 
-// main.1830c.js is qqplay and jsb platform entry file, so we must leave platform init code here
+// main.f863c.js is qqplay and jsb platform entry file, so we must leave platform init code here
 if (false) {
     BK.Script.loadlib('GameRes://src/settings.js');
     BK.Script.loadlib();
@@ -235,12 +235,12 @@ if (false) {
 else if (window.jsb) {
     var isRuntime = (typeof loadRuntime === 'function');
     if (isRuntime) {
-        require('src/settings.25075.js');
+        require('src/settings.7d95a.js');
         require('src/cocos2d-runtime.js');
         require('jsb-adapter/engine/index.js');
     }
     else {
-        require('src/settings.25075.js');
+        require('src/settings.7d95a.js');
         require('src/cocos2d-jsb.379b3.js');
         require('jsb-adapter/jsb-engine.js');
     }
