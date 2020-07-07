@@ -4,7 +4,9 @@
     if (typeof window.jsb === 'object') {
         var hotUpdateSearchPaths = localStorage.getItem('HotUpdateSearchPaths');
         if (hotUpdateSearchPaths) {
+           
             var paths = JSON.parse(hotUpdateSearchPaths);
+             console.log("hotUpdateSearchPaths:", paths);
             jsb.fileUtils.setSearchPaths(paths);
 
             var fileList = [];
@@ -209,7 +211,7 @@ window.boot = function () {
     cc.game.run(option, onStart);
 };
 
-// main.561eb.js is qqplay and jsb platform entry file, so we must leave platform init code here
+// main.b77b0.js is qqplay and jsb platform entry file, so we must leave platform init code here
 if (false) {
     BK.Script.loadlib('GameRes://src/settings.js');
     BK.Script.loadlib();
@@ -235,12 +237,12 @@ if (false) {
 else if (window.jsb) {
     var isRuntime = (typeof loadRuntime === 'function');
     if (isRuntime) {
-        require('src/settings.ac59a.js');
+        require('src/settings.5e5d1.js');
         require('src/cocos2d-runtime.js');
         require('jsb-adapter/engine/index.js');
     }
     else {
-        require('src/settings.ac59a.js');
+        require('src/settings.5e5d1.js');
         require('src/cocos2d-jsb.379b3.js');
         require('jsb-adapter/jsb-engine.js');
     }
